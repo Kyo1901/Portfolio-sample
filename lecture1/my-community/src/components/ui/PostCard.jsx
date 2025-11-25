@@ -54,12 +54,14 @@ function PostCard({ post }) {
             <Typography variant="h6" component="h3" gutterBottom>
               {post.title}
             </Typography>
-            <Chip
-              label={post.genre}
-              size="small"
-              variant="outlined"
-              sx={{ mt: 1 }}
-            />
+            {post.genre && (
+              <Chip
+                label={post.genre}
+                size="small"
+                variant="outlined"
+                sx={{ mt: 1 }}
+              />
+            )}
           </Box>
 
           <Stack

@@ -237,9 +237,11 @@ function PostDetail() {
             {post.title}
           </Typography>
 
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
-            <Chip label={post.genre} variant="outlined" />
-          </Stack>
+          {post.genre && (
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
+              <Chip label={post.genre} variant="outlined" />
+            </Stack>
+          )}
 
           <Stack
             direction="row"

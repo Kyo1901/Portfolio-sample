@@ -4,6 +4,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
 import Guestbook from '../ui/Guestbook';
 
 /**
@@ -12,13 +13,14 @@ import Guestbook from '../ui/Guestbook';
  */
 function ContactSection() {
   const contactInfo = [
-    { icon: <EmailIcon />, label: '이메일', value: 'your.email@example.com' },
-    { icon: <PhoneIcon />, label: '전화', value: '+82 10-1234-5678' }
+    { icon: <EmailIcon />, label: '이메일', value: 'skadnjs153@naver.com' },
+    { icon: <PhoneIcon />, label: '전화', value: '010-8905-1901' }
   ];
 
   const socialLinks = [
     { icon: <GitHubIcon />, label: 'GitHub', url: 'https://github.com' },
     { icon: <LinkedInIcon />, label: 'LinkedIn', url: 'https://linkedin.com' },
+    { icon: <InstagramIcon />, label: 'Instagram', url: 'https://instagram.com' },
     { icon: <TwitterIcon />, label: 'Twitter', url: 'https://twitter.com' }
   ];
 
@@ -123,7 +125,7 @@ function ContactSection() {
           </Typography>
           <Grid container spacing={2}>
             {socialLinks.map((social, index) => (
-              <Grid size={{ xs: 12, sm: 4 }} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Button
                   fullWidth
                   variant="outlined"

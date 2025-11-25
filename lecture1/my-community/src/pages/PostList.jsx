@@ -10,6 +10,10 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -20,6 +24,25 @@ import { supabase } from '../lib/supabase';
 import { getCurrentUser, signOut } from '../utils/auth';
 import PostCard from '../components/ui/PostCard';
 
+// 게임 장르 목록
+const GAME_GENRES = [
+  { value: 'all', label: '전체 보기' },
+  { value: '', label: '장르 없음' },
+  { value: 'RPG', label: 'RPG' },
+  { value: 'FPS', label: 'FPS' },
+  { value: 'MOBA', label: 'MOBA' },
+  { value: '전략', label: '전략' },
+  { value: '액션', label: '액션' },
+  { value: '어드벤처', label: '어드벤처' },
+  { value: '시뮬레이션', label: '시뮬레이션' },
+  { value: '스포츠', label: '스포츠' },
+  { value: '레이싱', label: '레이싱' },
+  { value: '퍼즐', label: '퍼즐' },
+  { value: '호러', label: '호러' },
+  { value: '샌드박스', label: '샌드박스' },
+  { value: '기타', label: '기타' },
+];
+
 /**
  * 게시물 목록 페이지 컴포넌트
  */
@@ -27,6 +50,7 @@ function PostList() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedGenre, setSelectedGenre] = useState('all');
   const currentUser = getCurrentUser();
 
   useEffect(() => {
@@ -35,16 +59,26 @@ function PostList() {
       return;
     }
     fetchPosts();
-  }, []);
+  }, [selectedGenre]);
 
   const fetchPosts = async () => {
     setLoading(true);
 
     // 게시물과 작성자 정보를 함께 가져오기
-    const { data: postsData, error: postsError } = await supabase
-      .from('posts')
-      .select('*')
-      .order('created_at', { ascending: false });
+    let query = supabase.from('posts').select('*');
+
+    // 장르 필터링
+    if (selectedGenre !== 'all') {
+      if (selectedGenre === '') {
+        // 장르가 없는 게시물 (NULL 또는 빈 문자열)
+        query = query.or('genre.is.null,genre.eq.');
+      } else {
+        // 특정 장르 선택
+        query = query.eq('genre', selectedGenre);
+      }
+    }
+
+    const { data: postsData, error: postsError } = await query.order('created_at', { ascending: false });
 
     if (postsError) {
       console.error('게시물 조회 오류:', postsError);
@@ -122,13 +156,32 @@ function PostList() {
           <Typography variant="h4" component="h2">
             게시물 목록
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreatePost}
-          >
-            게시글 작성
-          </Button>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <FormControl sx={{ minWidth: 150 }}>
+              <InputLabel id="genre-filter-label">장르 선택</InputLabel>
+              <Select
+                labelId="genre-filter-label"
+                id="genre-filter"
+                value={selectedGenre}
+                onChange={(e) => setSelectedGenre(e.target.value)}
+                label="장르 선택"
+                size="small"
+              >
+                {GAME_GENRES.map((genre) => (
+                  <MenuItem key={genre.value} value={genre.value}>
+                    {genre.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleCreatePost}
+            >
+              게시글 작성
+            </Button>
+          </Stack>
         </Stack>
 
         {loading ? (

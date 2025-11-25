@@ -50,3 +50,6 @@ Thumbs.db
 
 # Windows reserved names
 nul
+
+# Local Netlify folder
+.netlify

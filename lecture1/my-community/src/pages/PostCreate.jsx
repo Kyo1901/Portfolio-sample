@@ -11,10 +11,32 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { supabase } from '../lib/supabase';
 import { getCurrentUser } from '../utils/auth';
+
+// 게임 장르 목록
+const GAME_GENRES = [
+  { value: '', label: '장르 선택 안함' },
+  { value: 'RPG', label: 'RPG' },
+  { value: 'FPS', label: 'FPS' },
+  { value: 'MOBA', label: 'MOBA' },
+  { value: '전략', label: '전략' },
+  { value: '액션', label: '액션' },
+  { value: '어드벤처', label: '어드벤처' },
+  { value: '시뮬레이션', label: '시뮬레이션' },
+  { value: '스포츠', label: '스포츠' },
+  { value: '레이싱', label: '레이싱' },
+  { value: '퍼즐', label: '퍼즐' },
+  { value: '호러', label: '호러' },
+  { value: '샌드박스', label: '샌드박스' },
+  { value: '기타', label: '기타' },
+];
 
 /**
  * 게시물 작성 페이지 컴포넌트
@@ -114,16 +136,23 @@ function PostCreate() {
               autoFocus
             />
 
-            <TextField
-              fullWidth
-              label="장르"
-              name="genre"
-              value={formData.genre}
-              onChange={handleChange}
-              margin="normal"
-              required
-              helperText="예: RPG, FPS, MOBA, 전략 등"
-            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="genre-select-label">장르</InputLabel>
+              <Select
+                labelId="genre-select-label"
+                id="genre-select"
+                name="genre"
+                value={formData.genre}
+                onChange={handleChange}
+                label="장르"
+              >
+                {GAME_GENRES.map((genre) => (
+                  <MenuItem key={genre.value} value={genre.value}>
+                    {genre.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <TextField
               fullWidth
