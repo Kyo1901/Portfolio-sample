@@ -6,30 +6,39 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import Guestbook from '../ui/Guestbook';
+import { usePortfolio } from '../../context/PortfolioContext';
 
 /**
  * Contact 섹션 컴포넌트
  * Apple 스타일의 간결한 디자인으로 연락처와 방명록을 표시
+ * Context에서 socialLinks 데이터를 가져와 사용
  */
 function ContactSection() {
+  const { aboutMeData } = usePortfolio();
+  const { socialLinks } = aboutMeData;
+
   const contactInfo = [
     { icon: <EmailIcon />, label: '이메일', value: 'skadnjs153@naver.com' },
     { icon: <PhoneIcon />, label: '전화', value: '010-8905-1901' }
   ];
 
-  const socialLinks = [
-    { icon: <GitHubIcon />, label: 'GitHub', url: 'https://github.com' },
-    { icon: <LinkedInIcon />, label: 'LinkedIn', url: 'https://linkedin.com' },
-    { icon: <InstagramIcon />, label: 'Instagram', url: 'https://instagram.com' },
-    { icon: <TwitterIcon />, label: 'Twitter', url: 'https://twitter.com' }
-  ];
+  // 아이콘 매핑 함수
+  const getIconComponent = (iconName) => {
+    const iconMap = {
+      GitHubIcon: <GitHubIcon />,
+      LinkedInIcon: <LinkedInIcon />,
+      InstagramIcon: <InstagramIcon />,
+      TwitterIcon: <TwitterIcon />
+    };
+    return iconMap[iconName] || <GitHubIcon />;
+  };
 
   return (
     <Box
       id="contact"
       sx={{
         py: { xs: 8, md: 12 },
-        backgroundColor: '#f5f5f7',
+        backgroundColor: '#ffffff',
         minHeight: '100vh'
       }}
     >
@@ -71,7 +80,7 @@ function ContactSection() {
           <CardContent sx={{ p: { xs: 3, md: 4 } }}>
             <Grid container spacing={3}>
               {contactInfo.map((contact, index) => (
-                <Grid size={{ xs: 12, md: 6 }} key={index}>
+                <Grid item xs={12} md={6} key={index}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box
                       sx={{
@@ -125,7 +134,7 @@ function ContactSection() {
           </Typography>
           <Grid container spacing={2}>
             {socialLinks.map((social, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+              <Grid item xs={12} sm={6} md={3} key={index}>
                 <Button
                   fullWidth
                   variant="outlined"
