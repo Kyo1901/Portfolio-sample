@@ -9,7 +9,13 @@ import {
   Toolbar,
   IconButton,
   Card,
-  CardMedia
+  CardMedia,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Rating,
+  Grid
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
@@ -17,8 +23,12 @@ import { supabase } from '../lib/supabase';
 
 function CreatePost() {
   const navigate = useNavigate();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
+  const [caption, setCaption] = useState('');
+  const [location, setLocation] = useState('');
+  const [foodCategory, setFoodCategory] = useState('');
+  const [rating, setRating] = useState(0);
+  const [priceRange, setPriceRange] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -43,21 +53,27 @@ function CreatePost() {
     setLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const userData = localStorage.getItem('sns_user');
+      if (!userData) {
         alert('로그인이 필요합니다.');
         navigate('/login');
         return;
       }
 
+      const user = JSON.parse(userData);
+
       const { error } = await supabase
-        .from('posts')
+        .from('restaurant_posts')
         .insert([
           {
-            title,
-            content,
+            restaurant_name: restaurantName,
+            caption,
+            location,
+            food_category: foodCategory,
+            rating: rating || null,
+            price_range: priceRange || null,
             image_url: imageUrl,
-            author_id: user.id
+            user_id: user.id
           }
         ]);
 
@@ -73,7 +89,7 @@ function CreatePost() {
   };
 
   return (
-    <Box>
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <AppBar position="sticky">
         <Toolbar>
           <IconButton
@@ -83,66 +99,142 @@ function CreatePost() {
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              fontWeight: 700,
+              fontSize: { xs: '1.25rem', md: '1.5rem' }
+            }}
+          >
             게시물 작성
           </Typography>
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="md" sx={{ py: 4 }}>
+      <Container maxWidth="md" sx={{ py: { xs: 3, md: 4 } }}>
         <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="맛집 이름"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            sx={{ mb: 2 }}
-          />
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                label="맛집 이름"
+                value={restaurantName}
+                onChange={(e) => setRestaurantName(e.target.value)}
+                required
+              />
+            </Grid>
 
-          <TextField
-            fullWidth
-            label="리뷰 내용"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            multiline
-            rows={4}
-            sx={{ mb: 2 }}
-          />
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                label="위치/주소"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="예: 서울 강남구 테헤란로"
+              />
+            </Grid>
 
-          <Box sx={{ mb: 2 }}>
-            <Button
-              variant="outlined"
-              onClick={handleRandomImage}
-              fullWidth
-              sx={{ mb: 2 }}
-            >
-              랜덤 음식 이미지 선택
-            </Button>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl fullWidth>
+                <InputLabel>음식 카테고리</InputLabel>
+                <Select
+                  value={foodCategory}
+                  onChange={(e) => setFoodCategory(e.target.value)}
+                  label="음식 카테고리"
+                >
+                  <MenuItem value="">선택 안함</MenuItem>
+                  <MenuItem value="한식">한식</MenuItem>
+                  <MenuItem value="중식">중식</MenuItem>
+                  <MenuItem value="일식">일식</MenuItem>
+                  <MenuItem value="양식">양식</MenuItem>
+                  <MenuItem value="분식">분식</MenuItem>
+                  <MenuItem value="디저트">디저트</MenuItem>
+                  <MenuItem value="카페">카페</MenuItem>
+                  <MenuItem value="기타">기타</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl fullWidth>
+                <InputLabel>가격대</InputLabel>
+                <Select
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(e.target.value)}
+                  label="가격대"
+                >
+                  <MenuItem value="">선택 안함</MenuItem>
+                  <MenuItem value="$">$ (1만원 이하)</MenuItem>
+                  <MenuItem value="$$">$$ (1-2만원)</MenuItem>
+                  <MenuItem value="$$$">$$$ (2-3만원)</MenuItem>
+                  <MenuItem value="$$$$">$$$$ (3-5만원)</MenuItem>
+                  <MenuItem value="$$$$$">$$$$$ (5만원 이상)</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <Typography component="legend" sx={{ mb: 1 }}>
+                별점
+              </Typography>
+              <Rating
+                value={rating}
+                onChange={(event, newValue) => setRating(newValue)}
+                size="large"
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth
+                label="리뷰 내용"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                required
+                multiline
+                rows={{ xs: 4, md: 6 }}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <Button
+                variant="outlined"
+                onClick={handleRandomImage}
+                fullWidth
+                size="large"
+              >
+                랜덤 음식 이미지 선택
+              </Button>
+            </Grid>
 
             {imageUrl && (
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="300"
-                  image={imageUrl}
-                  alt="선택된 이미지"
-                  sx={{ objectFit: 'cover' }}
-                />
-              </Card>
+              <Grid size={{ xs: 12 }}>
+                <Card sx={{ maxWidth: { xs: '100%', md: '600px' }, mx: 'auto' }}>
+                  <CardMedia
+                    component="img"
+                    height="300"
+                    image={imageUrl}
+                    alt="선택된 이미지"
+                    sx={{ objectFit: 'cover' }}
+                  />
+                </Card>
+              </Grid>
             )}
-          </Box>
 
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            size="large"
-            disabled={loading || !imageUrl}
-          >
-            {loading ? '작성 중...' : '게시물 작성'}
-          </Button>
+            <Grid size={{ xs: 12 }}>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                size="large"
+                disabled={loading || !imageUrl}
+                sx={{ py: { xs: 1.5, md: 2 } }}
+              >
+                {loading ? '작성 중...' : '게시물 작성'}
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
       </Container>
     </Box>

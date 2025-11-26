@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "netlify": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@netlify/mcp"
+      ],
+      "env": {
+        "NETLIFY_PERSONAL_ACCESS_TOKEN": "nfp_QNsHn6FuvRscCEM1vGrgF1vmd2S32EfT24ff"
+      }
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=hrwvtwrxghmrfsahmfll"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_6353093a5e66a098b5c856275f385fa4481d38ae"
+      }
+    }
+  }
+}

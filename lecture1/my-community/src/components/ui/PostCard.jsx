@@ -47,22 +47,38 @@ function PostCard({ post }) {
   };
 
   return (
-    <Card>
+    <Card
+      sx={{
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: 4,
+          borderColor: 'primary.main',
+        },
+      }}
+    >
       <CardActionArea onClick={() => navigate(`/posts/${post.id}`)}>
         <CardContent>
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="h6" component="h3" gutterBottom>
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1.5 }}>
+            <Typography variant="h6" component="h3" sx={{ flexGrow: 1 }}>
               {post.title}
             </Typography>
             {post.genre && (
               <Chip
                 label={post.genre}
                 size="small"
-                variant="outlined"
-                sx={{ mt: 1 }}
+                sx={{
+                  backgroundColor: 'primary.main',
+                  color: 'white',
+                  fontWeight: 600,
+                  fontSize: '0.75rem',
+                  '&:hover': {
+                    backgroundColor: 'primary.dark',
+                  },
+                }}
               />
             )}
-          </Box>
+          </Stack>
 
           <Stack
             direction="row"
@@ -71,7 +87,9 @@ function PostCard({ post }) {
             sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Typography variant="body2">{post.author_nickname}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                {post.author_nickname}
+              </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <AccessTimeIcon sx={{ fontSize: 16 }} />

@@ -127,13 +127,14 @@ function PostCreate() {
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
-              label="게임 이름"
+              label="제목"
               name="title"
               value={formData.title}
               onChange={handleChange}
               margin="normal"
               required
               autoFocus
+              placeholder="게시글 제목을 입력하세요"
             />
 
             <FormControl fullWidth margin="normal">
