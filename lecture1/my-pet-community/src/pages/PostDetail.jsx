@@ -49,10 +49,10 @@ function PostDetail() {
 
   const fetchPost = async () => {
     const { data, error } = await supabase
-      .from('posts')
+      .from('pet_posts')
       .select(`
         *,
-        users:author_id (nickname)
+        pet_users:author_id (nickname)
       `)
       .eq('id', id)
       .single();
@@ -66,10 +66,10 @@ function PostDetail() {
 
   const fetchComments = async () => {
     const { data, error } = await supabase
-      .from('comments')
+      .from('pet_comments')
       .select(`
         *,
-        users:author_id (nickname)
+        pet_users:author_id (nickname)
       `)
       .eq('post_id', id)
       .order('created_at', { ascending: true });
@@ -83,7 +83,7 @@ function PostDetail() {
 
   const checkLikeStatus = async () => {
     const { data, error } = await supabase
-      .from('likes')
+      .from('pet_links')
       .select('*')
       .eq('post_id', id)
       .eq('user_id', user.id)
@@ -97,7 +97,7 @@ function PostDetail() {
   const handleLike = async () => {
     if (isLiked) {
       const { error } = await supabase
-        .from('likes')
+        .from('pet_links')
         .delete()
         .eq('post_id', id)
         .eq('user_id', user.id);
@@ -108,7 +108,7 @@ function PostDetail() {
       }
     } else {
       const { error } = await supabase
-        .from('likes')
+        .from('pet_links')
         .insert([{ post_id: id, user_id: user.id }]);
 
       if (!error) {
@@ -121,7 +121,7 @@ function PostDetail() {
   const updateLikesCount = async (change) => {
     const newCount = (post.likes_count || 0) + change;
     await supabase
-      .from('posts')
+      .from('pet_posts')
       .update({ likes_count: newCount })
       .eq('id', id);
     setPost({ ...post, likes_count: newCount });
@@ -132,7 +132,7 @@ function PostDetail() {
       return;
     }
 
-    const { error } = await supabase.from('comments').insert([
+    const { error } = await supabase.from('pet_comments').insert([
       {
         content: newComment,
         post_id: id,
@@ -201,7 +201,7 @@ function PostDetail() {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              {post.users?.nickname} · {formatDate(post.created_at)}
+              {post.pet_users?.nickname} · {formatDate(post.created_at)}
             </Typography>
             <Button
               variant={isLiked ? 'contained' : 'outlined'}
@@ -261,7 +261,7 @@ function PostDetail() {
                       primary={comment.content}
                       secondary={
                         <Typography variant="caption" color="text.secondary">
-                          {comment.users?.nickname} ·{' '}
+                          {comment.pet_users?.nickname} ·{' '}
                           {formatDate(comment.created_at)}
                         </Typography>
                       }

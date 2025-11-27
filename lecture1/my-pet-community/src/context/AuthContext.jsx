@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const { data, error } = await supabase
-        .from('users')
+        .from('pet_users')
         .select('*')
         .eq('username', username)
         .eq('password', password)
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (username, password, nickname) => {
     try {
       const { data: existingUser } = await supabase
-        .from('users')
+        .from('pet_users')
         .select('username')
         .eq('username', username)
         .single();
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       const { data, error } = await supabase
-        .from('users')
+        .from('pet_users')
         .insert([{ username, password, nickname }])
         .select()
         .single();

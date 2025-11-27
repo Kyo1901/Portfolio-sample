@@ -43,11 +43,11 @@ function PostList() {
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
-      .from('posts')
+      .from('pet_posts')
       .select(`
         *,
-        users:author_id (nickname),
-        comments (count)
+        pet_users:author_id (nickname),
+        pet_comments (count)
       `)
       .order('created_at', { ascending: false });
 
@@ -64,7 +64,7 @@ function PostList() {
       return;
     }
 
-    const { error } = await supabase.from('posts').insert([
+    const { error } = await supabase.from('pet_posts').insert([
       {
         title,
         content,
@@ -167,7 +167,7 @@ function PostList() {
                     }}
                   >
                     <Typography variant="caption" color="text.secondary">
-                      {post.users?.nickname} · {formatDate(post.created_at)}
+                      {post.pet_users?.nickname} · {formatDate(post.created_at)}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -179,7 +179,7 @@ function PostList() {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <Comment fontSize="small" color="action" />
                         <Typography variant="caption">
-                          {post.comments?.[0]?.count || 0}
+                          {post.pet_comments?.[0]?.count || 0}
                         </Typography>
                       </Box>
                     </Box>
